@@ -1,13 +1,12 @@
 class RoomChannel < ApplicationCable::Channel
+  # chatチャンネル接続時にコールされる
   def subscribed
-    stream_from 'room_channel'
+    stream_from "chat_channel"
+    ActionCable.server.broadcast 'chat_channel', message: 'connected.'
   end
 
-  def unsubscribed
-    # Any cleanup needed when channel is unsubscribed
-  end
-
+  # chatチャンネルのspeakメソッドは、受け取ったメッセージを全クライアントにブロードキャストする
   def speak(data)
-    ActionCable.server.broadcast 'room_channel', message: data['message']
+    ActionCable.server.broadcast 'chat_channel', message: data['message']
   end
 end
